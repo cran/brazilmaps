@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Renato Prado Siqueira" />
+
+
+<title>Using brazilmaps</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Using brazilmaps</h1>
+<h4 class="author">Renato Prado Siqueira</h4>
+
+
+
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(brazilmaps)</span></code></pre></div>
+<div id="local-spatial-objects" class="section level2">
+<h2>Local spatial objects</h2>
+<p>Every map returned by <code>get_brmap()</code> is installed with the
+package. No example in this vignette accesses the network.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>states <span class="ot">&lt;-</span> <span class="fu">get_brmap</span>(<span class="st">&quot;state&quot;</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>states</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="co">#&gt; Simple feature collection with 27 features and 4 fields</span></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="co">#&gt; Geometry type: MULTIPOLYGON</span></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="co">#&gt; Dimension:     XY</span></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a><span class="co">#&gt; Bounding box:  xmin: -73.98681 ymin: -33.75077 xmax: -28.84784 ymax: 5.26891</span></span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a><span class="co">#&gt; Geodetic CRS:  SIRGAS 2000</span></span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a><span class="co">#&gt; First 10 features:</span></span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a><span class="co">#&gt;    state_code      name state_abbreviation region_code</span></span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a><span class="co">#&gt; 1          11  Rondônia                 RO           1</span></span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a><span class="co">#&gt; 2          12      Acre                 AC           1</span></span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a><span class="co">#&gt; 3          13  Amazonas                 AM           1</span></span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a><span class="co">#&gt; 4          14   Roraima                 RR           1</span></span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a><span class="co">#&gt; 5          15      Pará                 PA           1</span></span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a><span class="co">#&gt; 6          16     Amapá                 AP           1</span></span>
+<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a><span class="co">#&gt; 7          17 Tocantins                 TO           1</span></span>
+<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a><span class="co">#&gt; 8          21  Maranhão                 MA           2</span></span>
+<span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a><span class="co">#&gt; 9          22     Piauí                 PI           2</span></span>
+<span id="cb2-19"><a href="#cb2-19" tabindex="-1"></a><span class="co">#&gt; 10         23     Ceará                 CE           2</span></span>
+<span id="cb2-20"><a href="#cb2-20" tabindex="-1"></a><span class="co">#&gt;                          geometry</span></span>
+<span id="cb2-21"><a href="#cb2-21" tabindex="-1"></a><span class="co">#&gt; 1  MULTIPOLYGON (((-66.62689 -...</span></span>
+<span id="cb2-22"><a href="#cb2-22" tabindex="-1"></a><span class="co">#&gt; 2  MULTIPOLYGON (((-73.79813 -...</span></span>
+<span id="cb2-23"><a href="#cb2-23" tabindex="-1"></a><span class="co">#&gt; 3  MULTIPOLYGON (((-73.79813 -...</span></span>
+<span id="cb2-24"><a href="#cb2-24" tabindex="-1"></a><span class="co">#&gt; 4  MULTIPOLYGON (((-63.37169 2...</span></span>
+<span id="cb2-25"><a href="#cb2-25" tabindex="-1"></a><span class="co">#&gt; 5  MULTIPOLYGON (((-58.13787 -...</span></span>
+<span id="cb2-26"><a href="#cb2-26" tabindex="-1"></a><span class="co">#&gt; 6  MULTIPOLYGON (((-54.87098 2...</span></span>
+<span id="cb2-27"><a href="#cb2-27" tabindex="-1"></a><span class="co">#&gt; 7  MULTIPOLYGON (((-50.511 -12...</span></span>
+<span id="cb2-28"><a href="#cb2-28" tabindex="-1"></a><span class="co">#&gt; 8  MULTIPOLYGON (((-48.75514 -...</span></span>
+<span id="cb2-29"><a href="#cb2-29" tabindex="-1"></a><span class="co">#&gt; 9  MULTIPOLYGON (((-45.72347 -...</span></span>
+<span id="cb2-30"><a href="#cb2-30" tabindex="-1"></a><span class="co">#&gt; 10 MULTIPOLYGON (((-41.32268 -...</span></span></code></pre></div>
+<p>The default municipal map is the newest installed edition:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>latest_year <span class="ot">&lt;-</span> <span class="fu">max</span>(<span class="fu">brmap_editions</span>()<span class="sc">$</span>year)</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>latest <span class="ot">&lt;-</span> <span class="fu">get_brmap</span>(<span class="st">&quot;municipality&quot;</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="fu">stopifnot</span>(<span class="fu">unique</span>(latest<span class="sc">$</span>year) <span class="sc">==</span> latest_year)</span></code></pre></div>
+</div>
+<div id="filters-use-intersection" class="section level2">
+<h2>Filters use intersection</h2>
+<p>A named list can contain one or several constraints. Constraints are
+combined with AND, so the following result contains only municipalities
+that satisfy both conditions:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>ms <span class="ot">&lt;-</span> <span class="fu">get_brmap</span>(</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>  <span class="st">&quot;municipality&quot;</span>,</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>  <span class="at">filters =</span> <span class="fu">list</span>(<span class="at">region =</span> <span class="dv">5</span>, <span class="at">state =</span> <span class="dv">50</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>)</span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="fu">unique</span>(ms[<span class="fu">c</span>(<span class="st">&quot;region_code&quot;</span>, <span class="st">&quot;state_code&quot;</span>)])</span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="co">#&gt; Simple feature collection with 79 features and 2 fields</span></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a><span class="co">#&gt; Geometry type: MULTIPOLYGON</span></span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a><span class="co">#&gt; Dimension:     XY</span></span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a><span class="co">#&gt; Bounding box:  xmin: -58.16865 ymin: -24.06838 xmax: -50.92289 ymax: -17.16634</span></span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a><span class="co">#&gt; Geodetic CRS:  SIRGAS 2000</span></span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a><span class="co">#&gt; First 10 features:</span></span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a><span class="co">#&gt;      region_code state_code                       geometry</span></span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a><span class="co">#&gt; 5104           5         50 MULTIPOLYGON (((-52.36427 -...</span></span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a><span class="co">#&gt; 5105           5         50 MULTIPOLYGON (((-54.20297 -...</span></span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a><span class="co">#&gt; 5106           5         50 MULTIPOLYGON (((-54.81266 -...</span></span>
+<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a><span class="co">#&gt; 5107           5         50 MULTIPOLYGON (((-55.48613 -...</span></span>
+<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a><span class="co">#&gt; 5108           5         50 MULTIPOLYGON (((-52.3919 -2...</span></span>
+<span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a><span class="co">#&gt; 5109           5         50 MULTIPOLYGON (((-53.58831 -...</span></span>
+<span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a><span class="co">#&gt; 5110           5         50 MULTIPOLYGON (((-55.76672 -...</span></span>
+<span id="cb4-20"><a href="#cb4-20" tabindex="-1"></a><span class="co">#&gt; 5111           5         50 MULTIPOLYGON (((-51.03348 -...</span></span>
+<span id="cb4-21"><a href="#cb4-21" tabindex="-1"></a><span class="co">#&gt; 5112           5         50 MULTIPOLYGON (((-55.58711 -...</span></span>
+<span id="cb4-22"><a href="#cb4-22" tabindex="-1"></a><span class="co">#&gt; 5113           5         50 MULTIPOLYGON (((-55.07266 -...</span></span></code></pre></div>
+</div>
+<div id="joins-and-plots" class="section level2">
+<h2>Joins and plots</h2>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;gini2015&quot;</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="fu">plot_brmap</span>(</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>  states,</span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>  <span class="at">data =</span> gini2015,</span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>  <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;state_code&quot;</span> <span class="ot">=</span> <span class="st">&quot;cod&quot;</span>),</span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>  <span class="at">fill_by =</span> <span class="st">&quot;gini&quot;</span></span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>)</span></code></pre></div>
+<p><img role="img" aria-label src="data:image/png;base64,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" alt style="display: block; margin: auto;" /></p>
+<p>For full control, use the returned object directly with
+<code>ggplot2::geom_sf()</code>.</p>
+</div>
+<div id="territorial-hierarchy" class="section level2">
+<h2>Territorial hierarchy</h2>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">get_dtb</span>(<span class="at">name =</span> <span class="st">&quot;Campo Grande&quot;</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="co">#&gt;         code         name               level region_code  region_name</span></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="co">#&gt; 458   500001 Campo Grande    immediate_region           5 Centro-Oeste</span></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a><span class="co">#&gt; 629     5001 Campo Grande intermediate_region           5 Centro-Oeste</span></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a><span class="co">#&gt; 1290   50004 Campo Grande         microregion           5 Centro-Oeste</span></span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a><span class="co">#&gt; 2426 2401305 Campo Grande        municipality           2     Nordeste</span></span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a><span class="co">#&gt; 3004 2701506 Campo Grande        municipality           2     Nordeste</span></span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a><span class="co">#&gt; 6461 5002704 Campo Grande        municipality           5 Centro-Oeste</span></span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a><span class="co">#&gt;      state_code          state_name microregion_code microregion_name</span></span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a><span class="co">#&gt; 458          50  Mato Grosso do Sul               NA             &lt;NA&gt;</span></span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a><span class="co">#&gt; 629          50  Mato Grosso do Sul               NA             &lt;NA&gt;</span></span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a><span class="co">#&gt; 1290         50  Mato Grosso do Sul            50004     Campo Grande</span></span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a><span class="co">#&gt; 2426         24 Rio Grande do Norte            24003      Médio Oeste</span></span>
+<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a><span class="co">#&gt; 3004         27             Alagoas            27006        Arapiraca</span></span>
+<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a><span class="co">#&gt; 6461         50  Mato Grosso do Sul            50004     Campo Grande</span></span>
+<span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a><span class="co">#&gt;      mesoregion_code                    mesoregion_name immediate_region_code</span></span>
+<span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a><span class="co">#&gt; 458               NA                               &lt;NA&gt;                500001</span></span>
+<span id="cb6-18"><a href="#cb6-18" tabindex="-1"></a><span class="co">#&gt; 629               NA                               &lt;NA&gt;                    NA</span></span>
+<span id="cb6-19"><a href="#cb6-19" tabindex="-1"></a><span class="co">#&gt; 1290            5002 Centro Norte de Mato Grosso do Sul                    NA</span></span>
+<span id="cb6-20"><a href="#cb6-20" tabindex="-1"></a><span class="co">#&gt; 2426            2401                     Oeste Potiguar                240009</span></span>
+<span id="cb6-21"><a href="#cb6-21" tabindex="-1"></a><span class="co">#&gt; 3004            2702                   Agreste Alagoano                270007</span></span>
+<span id="cb6-22"><a href="#cb6-22" tabindex="-1"></a><span class="co">#&gt; 6461            5002 Centro Norte de Mato Grosso do Sul                500001</span></span>
+<span id="cb6-23"><a href="#cb6-23" tabindex="-1"></a><span class="co">#&gt;      immediate_region_name intermediate_region_code intermediate_region_name</span></span>
+<span id="cb6-24"><a href="#cb6-24" tabindex="-1"></a><span class="co">#&gt; 458           Campo Grande                     5001             Campo Grande</span></span>
+<span id="cb6-25"><a href="#cb6-25" tabindex="-1"></a><span class="co">#&gt; 629                   &lt;NA&gt;                     5001             Campo Grande</span></span>
+<span id="cb6-26"><a href="#cb6-26" tabindex="-1"></a><span class="co">#&gt; 1290                  &lt;NA&gt;                       NA                     &lt;NA&gt;</span></span>
+<span id="cb6-27"><a href="#cb6-27" tabindex="-1"></a><span class="co">#&gt; 2426               Mossoró                     2403                  Mossoró</span></span>
+<span id="cb6-28"><a href="#cb6-28" tabindex="-1"></a><span class="co">#&gt; 3004             Arapiraca                     2702                Arapiraca</span></span>
+<span id="cb6-29"><a href="#cb6-29" tabindex="-1"></a><span class="co">#&gt; 6461          Campo Grande                     5001             Campo Grande</span></span>
+<span id="cb6-30"><a href="#cb6-30" tabindex="-1"></a><span class="co">#&gt;      municipality_code municipality_name</span></span>
+<span id="cb6-31"><a href="#cb6-31" tabindex="-1"></a><span class="co">#&gt; 458                 NA              &lt;NA&gt;</span></span>
+<span id="cb6-32"><a href="#cb6-32" tabindex="-1"></a><span class="co">#&gt; 629                 NA              &lt;NA&gt;</span></span>
+<span id="cb6-33"><a href="#cb6-33" tabindex="-1"></a><span class="co">#&gt; 1290                NA              &lt;NA&gt;</span></span>
+<span id="cb6-34"><a href="#cb6-34" tabindex="-1"></a><span class="co">#&gt; 2426           2401305      Campo Grande</span></span>
+<span id="cb6-35"><a href="#cb6-35" tabindex="-1"></a><span class="co">#&gt; 3004           2701506      Campo Grande</span></span>
+<span id="cb6-36"><a href="#cb6-36" tabindex="-1"></a><span class="co">#&gt; 6461           5002704      Campo Grande</span></span>
+<span id="cb6-37"><a href="#cb6-37" tabindex="-1"></a><span class="fu">get_dtb_levels</span>(</span>
+<span id="cb6-38"><a href="#cb6-38" tabindex="-1"></a>  <span class="fu">c</span>(<span class="st">&quot;municipality&quot;</span>, <span class="st">&quot;immediate_region&quot;</span>),</span>
+<span id="cb6-39"><a href="#cb6-39" tabindex="-1"></a>  <span class="at">filters =</span> <span class="fu">list</span>(<span class="at">state =</span> <span class="dv">50</span>)</span>
+<span id="cb6-40"><a href="#cb6-40" tabindex="-1"></a>)</span>
+<span id="cb6-41"><a href="#cb6-41" tabindex="-1"></a><span class="co">#&gt;      municipality_code        municipality_name immediate_region_code</span></span>
+<span id="cb6-42"><a href="#cb6-42" tabindex="-1"></a><span class="co">#&gt; 6442           5000203               Água Clara                500002</span></span>
+<span id="cb6-43"><a href="#cb6-43" tabindex="-1"></a><span class="co">#&gt; 6443           5000252              Alcinópolis                500004</span></span>
+<span id="cb6-44"><a href="#cb6-44" tabindex="-1"></a><span class="co">#&gt; 6444           5000609                  Amambai                500009</span></span>
+<span id="cb6-45"><a href="#cb6-45" tabindex="-1"></a><span class="co">#&gt; 6445           5000708                Anastácio                500012</span></span>
+<span id="cb6-46"><a href="#cb6-46" tabindex="-1"></a><span class="co">#&gt; 6446           5000807             Anaurilândia                500007</span></span>
+<span id="cb6-47"><a href="#cb6-47" tabindex="-1"></a><span class="co">#&gt; 6447           5000856                 Angélica                500007</span></span>
+<span id="cb6-48"><a href="#cb6-48" tabindex="-1"></a><span class="co">#&gt; 6448           5000906             Antônio João                500008</span></span>
+<span id="cb6-49"><a href="#cb6-49" tabindex="-1"></a><span class="co">#&gt; 6449           5001003     Aparecida do Taboado                500003</span></span>
+<span id="cb6-50"><a href="#cb6-50" tabindex="-1"></a><span class="co">#&gt; 6450           5001102               Aquidauana                500012</span></span>
+<span id="cb6-51"><a href="#cb6-51" tabindex="-1"></a><span class="co">#&gt; 6451           5001243             Aral Moreira                500008</span></span>
+<span id="cb6-52"><a href="#cb6-52" tabindex="-1"></a><span class="co">#&gt; 6452           5001508             Bandeirantes                500001</span></span>
+<span id="cb6-53"><a href="#cb6-53" tabindex="-1"></a><span class="co">#&gt; 6453           5001904               Bataguassu                500002</span></span>
+<span id="cb6-54"><a href="#cb6-54" tabindex="-1"></a><span class="co">#&gt; 6454           5002001                Batayporã                500007</span></span>
+<span id="cb6-55"><a href="#cb6-55" tabindex="-1"></a><span class="co">#&gt; 6455           5002100               Bela Vista                500011</span></span>
+<span id="cb6-56"><a href="#cb6-56" tabindex="-1"></a><span class="co">#&gt; 6456           5002159                Bodoquena                500012</span></span>
+<span id="cb6-57"><a href="#cb6-57" tabindex="-1"></a><span class="co">#&gt; 6457           5002209                   Bonito                500011</span></span>
+<span id="cb6-58"><a href="#cb6-58" tabindex="-1"></a><span class="co">#&gt; 6458           5002308              Brasilândia                500002</span></span>
+<span id="cb6-59"><a href="#cb6-59" tabindex="-1"></a><span class="co">#&gt; 6459           5002407                  Caarapó                500005</span></span>
+<span id="cb6-60"><a href="#cb6-60" tabindex="-1"></a><span class="co">#&gt; 6460           5002605                  Camapuã                500001</span></span>
+<span id="cb6-61"><a href="#cb6-61" tabindex="-1"></a><span class="co">#&gt; 6461           5002704             Campo Grande                500001</span></span>
+<span id="cb6-62"><a href="#cb6-62" tabindex="-1"></a><span class="co">#&gt; 6462           5002803                  Caracol                500011</span></span>
+<span id="cb6-63"><a href="#cb6-63" tabindex="-1"></a><span class="co">#&gt; 6463           5002902              Cassilândia                500003</span></span>
+<span id="cb6-64"><a href="#cb6-64" tabindex="-1"></a><span class="co">#&gt; 6464           5002951          Chapadão do Sul                500003</span></span>
+<span id="cb6-65"><a href="#cb6-65" tabindex="-1"></a><span class="co">#&gt; 6465           5003108                Corguinho                500001</span></span>
+<span id="cb6-66"><a href="#cb6-66" tabindex="-1"></a><span class="co">#&gt; 6466           5003157         Coronel Sapucaia                500009</span></span>
+<span id="cb6-67"><a href="#cb6-67" tabindex="-1"></a><span class="co">#&gt; 6467           5003207                  Corumbá                500010</span></span>
+<span id="cb6-68"><a href="#cb6-68" tabindex="-1"></a><span class="co">#&gt; 6468           5003256               Costa Rica                500004</span></span>
+<span id="cb6-69"><a href="#cb6-69" tabindex="-1"></a><span class="co">#&gt; 6469           5003306                    Coxim                500004</span></span>
+<span id="cb6-70"><a href="#cb6-70" tabindex="-1"></a><span class="co">#&gt; 6470           5003454               Deodápolis                500005</span></span>
+<span id="cb6-71"><a href="#cb6-71" tabindex="-1"></a><span class="co">#&gt; 6471           5003488    Dois Irmãos do Buriti                500001</span></span>
+<span id="cb6-72"><a href="#cb6-72" tabindex="-1"></a><span class="co">#&gt; 6472           5003504                Douradina                500005</span></span>
+<span id="cb6-73"><a href="#cb6-73" tabindex="-1"></a><span class="co">#&gt; 6473           5003702                 Dourados                500005</span></span>
+<span id="cb6-74"><a href="#cb6-74" tabindex="-1"></a><span class="co">#&gt; 6474           5003751                 Eldorado                500006</span></span>
+<span id="cb6-75"><a href="#cb6-75" tabindex="-1"></a><span class="co">#&gt; 6475           5003801            Fátima do Sul                500005</span></span>
+<span id="cb6-76"><a href="#cb6-76" tabindex="-1"></a><span class="co">#&gt; 6476           5003900                Figueirão                500004</span></span>
+<span id="cb6-77"><a href="#cb6-77" tabindex="-1"></a><span class="co">#&gt; 6477           5004007       Glória de Dourados                500005</span></span>
+<span id="cb6-78"><a href="#cb6-78" tabindex="-1"></a><span class="co">#&gt; 6478           5004106     Guia Lopes da Laguna                500011</span></span>
+<span id="cb6-79"><a href="#cb6-79" tabindex="-1"></a><span class="co">#&gt; 6479           5004304                 Iguatemi                500006</span></span>
+<span id="cb6-80"><a href="#cb6-80" tabindex="-1"></a><span class="co">#&gt; 6480           5004403                Inocência                500003</span></span>
+<span id="cb6-81"><a href="#cb6-81" tabindex="-1"></a><span class="co">#&gt; 6481           5004502                  Itaporã                500005</span></span>
+<span id="cb6-82"><a href="#cb6-82" tabindex="-1"></a><span class="co">#&gt; 6482           5004601                Itaquiraí                500006</span></span>
+<span id="cb6-83"><a href="#cb6-83" tabindex="-1"></a><span class="co">#&gt; 6483           5004700                 Ivinhema                500007</span></span>
+<span id="cb6-84"><a href="#cb6-84" tabindex="-1"></a><span class="co">#&gt; 6484           5004809                   Japorã                500006</span></span>
+<span id="cb6-85"><a href="#cb6-85" tabindex="-1"></a><span class="co">#&gt; 6485           5004908                Jaraguari                500001</span></span>
+<span id="cb6-86"><a href="#cb6-86" tabindex="-1"></a><span class="co">#&gt; 6486           5005004                   Jardim                500011</span></span>
+<span id="cb6-87"><a href="#cb6-87" tabindex="-1"></a><span class="co">#&gt; 6487           5005103                    Jateí                500005</span></span>
+<span id="cb6-88"><a href="#cb6-88" tabindex="-1"></a><span class="co">#&gt; 6488           5005152                     Juti                500005</span></span>
+<span id="cb6-89"><a href="#cb6-89" tabindex="-1"></a><span class="co">#&gt; 6489           5005202                  Ladário                500010</span></span>
+<span id="cb6-90"><a href="#cb6-90" tabindex="-1"></a><span class="co">#&gt; 6490           5005251            Laguna Carapã                500005</span></span>
+<span id="cb6-91"><a href="#cb6-91" tabindex="-1"></a><span class="co">#&gt; 6491           5005400                 Maracaju                500005</span></span>
+<span id="cb6-92"><a href="#cb6-92" tabindex="-1"></a><span class="co">#&gt; 6492           5005608                  Miranda                500012</span></span>
+<span id="cb6-93"><a href="#cb6-93" tabindex="-1"></a><span class="co">#&gt; 6493           5005681               Mundo Novo                500006</span></span>
+<span id="cb6-94"><a href="#cb6-94" tabindex="-1"></a><span class="co">#&gt; 6494           5005707                  Naviraí                500006</span></span>
+<span id="cb6-95"><a href="#cb6-95" tabindex="-1"></a><span class="co">#&gt; 6495           5005806                  Nioaque                500011</span></span>
+<span id="cb6-96"><a href="#cb6-96" tabindex="-1"></a><span class="co">#&gt; 6496           5006002     Nova Alvorada do Sul                500001</span></span>
+<span id="cb6-97"><a href="#cb6-97" tabindex="-1"></a><span class="co">#&gt; 6497           5006200           Nova Andradina                500007</span></span>
+<span id="cb6-98"><a href="#cb6-98" tabindex="-1"></a><span class="co">#&gt; 6498           5006259    Novo Horizonte do Sul                500007</span></span>
+<span id="cb6-99"><a href="#cb6-99" tabindex="-1"></a><span class="co">#&gt; 6499           5006275        Paraíso das Águas                500003</span></span>
+<span id="cb6-100"><a href="#cb6-100" tabindex="-1"></a><span class="co">#&gt; 6500           5006309                Paranaíba                500003</span></span>
+<span id="cb6-101"><a href="#cb6-101" tabindex="-1"></a><span class="co">#&gt; 6501           5006358                 Paranhos                500009</span></span>
+<span id="cb6-102"><a href="#cb6-102" tabindex="-1"></a><span class="co">#&gt; 6502           5006408              Pedro Gomes                500004</span></span>
+<span id="cb6-103"><a href="#cb6-103" tabindex="-1"></a><span class="co">#&gt; 6503           5006606               Ponta Porã                500008</span></span>
+<span id="cb6-104"><a href="#cb6-104" tabindex="-1"></a><span class="co">#&gt; 6504           5006903           Porto Murtinho                500011</span></span>
+<span id="cb6-105"><a href="#cb6-105" tabindex="-1"></a><span class="co">#&gt; 6505           5007109       Ribas do Rio Pardo                500001</span></span>
+<span id="cb6-106"><a href="#cb6-106" tabindex="-1"></a><span class="co">#&gt; 6506           5007208            Rio Brilhante                500005</span></span>
+<span id="cb6-107"><a href="#cb6-107" tabindex="-1"></a><span class="co">#&gt; 6507           5007307                Rio Negro                500001</span></span>
+<span id="cb6-108"><a href="#cb6-108" tabindex="-1"></a><span class="co">#&gt; 6508           5007406 Rio Verde de Mato Grosso                500004</span></span>
+<span id="cb6-109"><a href="#cb6-109" tabindex="-1"></a><span class="co">#&gt; 6509           5007505                  Rochedo                500001</span></span>
+<span id="cb6-110"><a href="#cb6-110" tabindex="-1"></a><span class="co">#&gt; 6510           5007554      Santa Rita do Pardo                500002</span></span>
+<span id="cb6-111"><a href="#cb6-111" tabindex="-1"></a><span class="co">#&gt; 6511           5007695     São Gabriel do Oeste                500001</span></span>
+<span id="cb6-112"><a href="#cb6-112" tabindex="-1"></a><span class="co">#&gt; 6512           5007703              Sete Quedas                500009</span></span>
+<span id="cb6-113"><a href="#cb6-113" tabindex="-1"></a><span class="co">#&gt; 6513           5007802                 Selvíria                500002</span></span>
+<span id="cb6-114"><a href="#cb6-114" tabindex="-1"></a><span class="co">#&gt; 6514           5007901              Sidrolândia                500001</span></span>
+<span id="cb6-115"><a href="#cb6-115" tabindex="-1"></a><span class="co">#&gt; 6515           5007935                   Sonora                500004</span></span>
+<span id="cb6-116"><a href="#cb6-116" tabindex="-1"></a><span class="co">#&gt; 6516           5007950                   Tacuru                500009</span></span>
+<span id="cb6-117"><a href="#cb6-117" tabindex="-1"></a><span class="co">#&gt; 6517           5007976               Taquarussu                500007</span></span>
+<span id="cb6-118"><a href="#cb6-118" tabindex="-1"></a><span class="co">#&gt; 6518           5008008                  Terenos                500001</span></span>
+<span id="cb6-119"><a href="#cb6-119" tabindex="-1"></a><span class="co">#&gt; 6519           5008305              Três Lagoas                500002</span></span>
+<span id="cb6-120"><a href="#cb6-120" tabindex="-1"></a><span class="co">#&gt; 6520           5008404                Vicentina                500005</span></span>
+<span id="cb6-121"><a href="#cb6-121" tabindex="-1"></a><span class="co">#&gt;                          immediate_region_name</span></span>
+<span id="cb6-122"><a href="#cb6-122" tabindex="-1"></a><span class="co">#&gt; 6442                               Três Lagoas</span></span>
+<span id="cb6-123"><a href="#cb6-123" tabindex="-1"></a><span class="co">#&gt; 6443                                     Coxim</span></span>
+<span id="cb6-124"><a href="#cb6-124" tabindex="-1"></a><span class="co">#&gt; 6444                                   Amambai</span></span>
+<span id="cb6-125"><a href="#cb6-125" tabindex="-1"></a><span class="co">#&gt; 6445                    Aquidauana - Anastácio</span></span>
+<span id="cb6-126"><a href="#cb6-126" tabindex="-1"></a><span class="co">#&gt; 6446                            Nova Andradina</span></span>
+<span id="cb6-127"><a href="#cb6-127" tabindex="-1"></a><span class="co">#&gt; 6447                            Nova Andradina</span></span>
+<span id="cb6-128"><a href="#cb6-128" tabindex="-1"></a><span class="co">#&gt; 6448                                Ponta Porã</span></span>
+<span id="cb6-129"><a href="#cb6-129" tabindex="-1"></a><span class="co">#&gt; 6449 Paranaíba - Chapadão do Sul - Cassilândia</span></span>
+<span id="cb6-130"><a href="#cb6-130" tabindex="-1"></a><span class="co">#&gt; 6450                    Aquidauana - Anastácio</span></span>
+<span id="cb6-131"><a href="#cb6-131" tabindex="-1"></a><span class="co">#&gt; 6451                                Ponta Porã</span></span>
+<span id="cb6-132"><a href="#cb6-132" tabindex="-1"></a><span class="co">#&gt; 6452                              Campo Grande</span></span>
+<span id="cb6-133"><a href="#cb6-133" tabindex="-1"></a><span class="co">#&gt; 6453                               Três Lagoas</span></span>
+<span id="cb6-134"><a href="#cb6-134" tabindex="-1"></a><span class="co">#&gt; 6454                            Nova Andradina</span></span>
+<span id="cb6-135"><a href="#cb6-135" tabindex="-1"></a><span class="co">#&gt; 6455                                    Jardim</span></span>
+<span id="cb6-136"><a href="#cb6-136" tabindex="-1"></a><span class="co">#&gt; 6456                    Aquidauana - Anastácio</span></span>
+<span id="cb6-137"><a href="#cb6-137" tabindex="-1"></a><span class="co">#&gt; 6457                                    Jardim</span></span>
+<span id="cb6-138"><a href="#cb6-138" tabindex="-1"></a><span class="co">#&gt; 6458                               Três Lagoas</span></span>
+<span id="cb6-139"><a href="#cb6-139" tabindex="-1"></a><span class="co">#&gt; 6459                                  Dourados</span></span>
+<span id="cb6-140"><a href="#cb6-140" tabindex="-1"></a><span class="co">#&gt; 6460                              Campo Grande</span></span>
+<span id="cb6-141"><a href="#cb6-141" tabindex="-1"></a><span class="co">#&gt; 6461                              Campo Grande</span></span>
+<span id="cb6-142"><a href="#cb6-142" tabindex="-1"></a><span class="co">#&gt; 6462                                    Jardim</span></span>
+<span id="cb6-143"><a href="#cb6-143" tabindex="-1"></a><span class="co">#&gt; 6463 Paranaíba - Chapadão do Sul - Cassilândia</span></span>
+<span id="cb6-144"><a href="#cb6-144" tabindex="-1"></a><span class="co">#&gt; 6464 Paranaíba - Chapadão do Sul - Cassilândia</span></span>
+<span id="cb6-145"><a href="#cb6-145" tabindex="-1"></a><span class="co">#&gt; 6465                              Campo Grande</span></span>
+<span id="cb6-146"><a href="#cb6-146" tabindex="-1"></a><span class="co">#&gt; 6466                                   Amambai</span></span>
+<span id="cb6-147"><a href="#cb6-147" tabindex="-1"></a><span class="co">#&gt; 6467                                   Corumbá</span></span>
+<span id="cb6-148"><a href="#cb6-148" tabindex="-1"></a><span class="co">#&gt; 6468                                     Coxim</span></span>
+<span id="cb6-149"><a href="#cb6-149" tabindex="-1"></a><span class="co">#&gt; 6469                                     Coxim</span></span>
+<span id="cb6-150"><a href="#cb6-150" tabindex="-1"></a><span class="co">#&gt; 6470                                  Dourados</span></span>
+<span id="cb6-151"><a href="#cb6-151" tabindex="-1"></a><span class="co">#&gt; 6471                              Campo Grande</span></span>
+<span id="cb6-152"><a href="#cb6-152" tabindex="-1"></a><span class="co">#&gt; 6472                                  Dourados</span></span>
+<span id="cb6-153"><a href="#cb6-153" tabindex="-1"></a><span class="co">#&gt; 6473                                  Dourados</span></span>
+<span id="cb6-154"><a href="#cb6-154" tabindex="-1"></a><span class="co">#&gt; 6474                      Naviraí - Mundo Novo</span></span>
+<span id="cb6-155"><a href="#cb6-155" tabindex="-1"></a><span class="co">#&gt; 6475                                  Dourados</span></span>
+<span id="cb6-156"><a href="#cb6-156" tabindex="-1"></a><span class="co">#&gt; 6476                                     Coxim</span></span>
+<span id="cb6-157"><a href="#cb6-157" tabindex="-1"></a><span class="co">#&gt; 6477                                  Dourados</span></span>
+<span id="cb6-158"><a href="#cb6-158" tabindex="-1"></a><span class="co">#&gt; 6478                                    Jardim</span></span>
+<span id="cb6-159"><a href="#cb6-159" tabindex="-1"></a><span class="co">#&gt; 6479                      Naviraí - Mundo Novo</span></span>
+<span id="cb6-160"><a href="#cb6-160" tabindex="-1"></a><span class="co">#&gt; 6480 Paranaíba - Chapadão do Sul - Cassilândia</span></span>
+<span id="cb6-161"><a href="#cb6-161" tabindex="-1"></a><span class="co">#&gt; 6481                                  Dourados</span></span>
+<span id="cb6-162"><a href="#cb6-162" tabindex="-1"></a><span class="co">#&gt; 6482                      Naviraí - Mundo Novo</span></span>
+<span id="cb6-163"><a href="#cb6-163" tabindex="-1"></a><span class="co">#&gt; 6483                            Nova Andradina</span></span>
+<span id="cb6-164"><a href="#cb6-164" tabindex="-1"></a><span class="co">#&gt; 6484                      Naviraí - Mundo Novo</span></span>
+<span id="cb6-165"><a href="#cb6-165" tabindex="-1"></a><span class="co">#&gt; 6485                              Campo Grande</span></span>
+<span id="cb6-166"><a href="#cb6-166" tabindex="-1"></a><span class="co">#&gt; 6486                                    Jardim</span></span>
+<span id="cb6-167"><a href="#cb6-167" tabindex="-1"></a><span class="co">#&gt; 6487                                  Dourados</span></span>
+<span id="cb6-168"><a href="#cb6-168" tabindex="-1"></a><span class="co">#&gt; 6488                                  Dourados</span></span>
+<span id="cb6-169"><a href="#cb6-169" tabindex="-1"></a><span class="co">#&gt; 6489                                   Corumbá</span></span>
+<span id="cb6-170"><a href="#cb6-170" tabindex="-1"></a><span class="co">#&gt; 6490                                  Dourados</span></span>
+<span id="cb6-171"><a href="#cb6-171" tabindex="-1"></a><span class="co">#&gt; 6491                                  Dourados</span></span>
+<span id="cb6-172"><a href="#cb6-172" tabindex="-1"></a><span class="co">#&gt; 6492                    Aquidauana - Anastácio</span></span>
+<span id="cb6-173"><a href="#cb6-173" tabindex="-1"></a><span class="co">#&gt; 6493                      Naviraí - Mundo Novo</span></span>
+<span id="cb6-174"><a href="#cb6-174" tabindex="-1"></a><span class="co">#&gt; 6494                      Naviraí - Mundo Novo</span></span>
+<span id="cb6-175"><a href="#cb6-175" tabindex="-1"></a><span class="co">#&gt; 6495                                    Jardim</span></span>
+<span id="cb6-176"><a href="#cb6-176" tabindex="-1"></a><span class="co">#&gt; 6496                              Campo Grande</span></span>
+<span id="cb6-177"><a href="#cb6-177" tabindex="-1"></a><span class="co">#&gt; 6497                            Nova Andradina</span></span>
+<span id="cb6-178"><a href="#cb6-178" tabindex="-1"></a><span class="co">#&gt; 6498                            Nova Andradina</span></span>
+<span id="cb6-179"><a href="#cb6-179" tabindex="-1"></a><span class="co">#&gt; 6499 Paranaíba - Chapadão do Sul - Cassilândia</span></span>
+<span id="cb6-180"><a href="#cb6-180" tabindex="-1"></a><span class="co">#&gt; 6500 Paranaíba - Chapadão do Sul - Cassilândia</span></span>
+<span id="cb6-181"><a href="#cb6-181" tabindex="-1"></a><span class="co">#&gt; 6501                                   Amambai</span></span>
+<span id="cb6-182"><a href="#cb6-182" tabindex="-1"></a><span class="co">#&gt; 6502                                     Coxim</span></span>
+<span id="cb6-183"><a href="#cb6-183" tabindex="-1"></a><span class="co">#&gt; 6503                                Ponta Porã</span></span>
+<span id="cb6-184"><a href="#cb6-184" tabindex="-1"></a><span class="co">#&gt; 6504                                    Jardim</span></span>
+<span id="cb6-185"><a href="#cb6-185" tabindex="-1"></a><span class="co">#&gt; 6505                              Campo Grande</span></span>
+<span id="cb6-186"><a href="#cb6-186" tabindex="-1"></a><span class="co">#&gt; 6506                                  Dourados</span></span>
+<span id="cb6-187"><a href="#cb6-187" tabindex="-1"></a><span class="co">#&gt; 6507                              Campo Grande</span></span>
+<span id="cb6-188"><a href="#cb6-188" tabindex="-1"></a><span class="co">#&gt; 6508                                     Coxim</span></span>
+<span id="cb6-189"><a href="#cb6-189" tabindex="-1"></a><span class="co">#&gt; 6509                              Campo Grande</span></span>
+<span id="cb6-190"><a href="#cb6-190" tabindex="-1"></a><span class="co">#&gt; 6510                               Três Lagoas</span></span>
+<span id="cb6-191"><a href="#cb6-191" tabindex="-1"></a><span class="co">#&gt; 6511                              Campo Grande</span></span>
+<span id="cb6-192"><a href="#cb6-192" tabindex="-1"></a><span class="co">#&gt; 6512                                   Amambai</span></span>
+<span id="cb6-193"><a href="#cb6-193" tabindex="-1"></a><span class="co">#&gt; 6513                               Três Lagoas</span></span>
+<span id="cb6-194"><a href="#cb6-194" tabindex="-1"></a><span class="co">#&gt; 6514                              Campo Grande</span></span>
+<span id="cb6-195"><a href="#cb6-195" tabindex="-1"></a><span class="co">#&gt; 6515                                     Coxim</span></span>
+<span id="cb6-196"><a href="#cb6-196" tabindex="-1"></a><span class="co">#&gt; 6516                                   Amambai</span></span>
+<span id="cb6-197"><a href="#cb6-197" tabindex="-1"></a><span class="co">#&gt; 6517                            Nova Andradina</span></span>
+<span id="cb6-198"><a href="#cb6-198" tabindex="-1"></a><span class="co">#&gt; 6518                              Campo Grande</span></span>
+<span id="cb6-199"><a href="#cb6-199" tabindex="-1"></a><span class="co">#&gt; 6519                               Três Lagoas</span></span>
+<span id="cb6-200"><a href="#cb6-200" tabindex="-1"></a><span class="co">#&gt; 6520                                  Dourados</span></span></code></pre></div>
+<p><code>microregion</code> and <code>mesoregion</code> are retained as
+discontinued historical IBGE divisions. <code>immediate_region</code>
+and <code>intermediate_region</code> are the current regional
+divisions.</p>
+<p>Legacy <code>sp</code> output remains available with
+<code>output = &quot;sp&quot;</code> when package <code>sp</code> is installed.
+New code should use the default <code>sf</code> output.</p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
